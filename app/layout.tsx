@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={cn(font.className, "bg-white dark:bg-[#1a1b1d]")}>
+        <body className={cn(font.className, "bg-white dark:bg-[#232020]")}>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
