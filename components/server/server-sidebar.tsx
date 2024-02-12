@@ -1,16 +1,17 @@
-import { currentProfile } from "@/lib/current-profile";
-import { db } from "@/lib/db";
-import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 import { ChannelType, MemberRole } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 
-import { ServerHeader } from "@/components/server/server-header";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ServerSearch } from "@/components/server/server-search";
 import { Separator } from "@/components/ui/separator";
-import { ServerSection } from "@/components/server/server-section";
-import { ServerChannel } from "@/components/server/server-channel";
-import { ServerMember } from "@/components/server/server-member";
+import { currentProfile } from "@/lib/current-profile";
+import { db } from "@/lib/db";
+
+import { ServerHeader } from "./server-header";
+import { ServerSearch } from "./server-search";
+import { ServerSection } from "./server-section";
+import { ServerChannel } from "./server-channel";
+import { ServerMember } from "./server-member";
 
 interface ServerSidebarProps {
   serverId: string;
@@ -25,15 +26,17 @@ const iconMap = {
 const roleIconMap = {
   [MemberRole.GUEST]: null,
   [MemberRole.MODERATOR]: (
-    <ShieldCheck className="mr-2 h-4 w-4 text-indigo-500" />
+    <ShieldCheck className="h-4 w-4 mr-2 text-indigo-500" />
   ),
-  [MemberRole.ADMIN]: <ShieldAlert className="mr-2 h-4 w-4 text-rose-500" />,
+  [MemberRole.ADMIN]: <ShieldAlert className="h-4 w-4 mr-2 text-rose-500" />,
 };
 
 export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   const profile = await currentProfile();
 
-  if (!profile) return redirect("/");
+  if (!profile) {
+    return redirect("/");
+  }
 
   const server = await db.server.findUnique({
     where: {
@@ -65,19 +68,20 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   const videoChannels = server?.channels.filter(
     (channel) => channel.type === ChannelType.VIDEO
   );
-
   const members = server?.members.filter(
     (member) => member.profileId !== profile.id
   );
 
-  if (!server) return redirect("/");
+  if (!server) {
+    return redirect("/");
+  }
 
   const role = server.members.find(
     (member) => member.profileId === profile.id
   )?.role;
 
   return (
-    <div className="flex flex-col h-full text-primary w-full dark:bg-[#151618] bg-[#F2F3F5]">
+    <div className="flex flex-col h-full text-primary w-full dark:bg-[#191a1c] bg-[#F2F3F5]">
       <ServerHeader server={server} role={role} />
       <ScrollArea className="flex-1 px-3">
         <div className="mt-2">
@@ -122,7 +126,7 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
             ]}
           />
         </div>
-        <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded my-2" />
+        <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
         {!!textChannels?.length && (
           <div className="mb-2">
             <ServerSection
